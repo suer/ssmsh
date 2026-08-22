@@ -1,0 +1,34 @@
+# ssmsh
+
+A CLI to log in to EC2 instances via AWS Systems Manager Session Manager.
+
+Instead of `aws ssm start-session --target <instance-id>`, it lets you log in intuitively using an EC2 Name tag.
+
+## Prerequisites
+
+- [session-manager-plugin](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html) installed and available on PATH
+- AWS credentials available (`AWS_PROFILE` / `AWS_REGION`, `~/.aws/config`, etc.)
+
+## Build
+
+```sh
+go build -o ssmsh .
+```
+
+## Usage
+
+```sh
+# By instance ID
+ssmsh i-0123456789abcdef0
+
+# By Name tag (resolved to an instance ID)
+ssmsh web-server-01
+
+# Run a command and exit (like ssh -c)
+ssmsh web-server-01 -c "uname -a"
+
+# Explicit profile/region
+ssmsh web-server-01 --profile myprofile --region ap-northeast-1
+```
+
+If a Name tag matches multiple instances, you can interactively pick one from the candidates.

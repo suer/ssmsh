@@ -23,10 +23,6 @@ type StartOptions struct {
 }
 
 func Start(ctx context.Context, client SSMAPI, opts StartOptions) error {
-	if err := CheckPluginInstalled(); err != nil {
-		return err
-	}
-
 	input := buildStartSessionInput(opts.InstanceID, opts.Command)
 
 	output, err := client.StartSession(ctx, input)

@@ -19,6 +19,10 @@ mise use -g github:suer/ssmsh
 - [session-manager-plugin](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html) installed and available on PATH
 - AWS credentials available (`AWS_PROFILE` / `AWS_REGION`, `~/.aws/config`, etc.)
 
+## Required IAM Policy
+
+- `AmazonSSMManagedInstanceCore`
+
 ## Build
 
 ```sh

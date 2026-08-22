@@ -4,6 +4,16 @@ A CLI to log in to EC2 instances via AWS Systems Manager Session Manager.
 
 Instead of `aws ssm start-session --target <instance-id>`, it lets you log in intuitively using an EC2 Name tag.
 
+## Install
+
+Download a prebuilt binary from the [Releases page](https://github.com/suer/ssmsh/releases).
+
+Or install via [mise](https://mise.jdx.dev/):
+
+```sh
+mise use -g github:suer/ssmsh
+```
+
 ## Prerequisites
 
 - [session-manager-plugin](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html) installed and available on PATH

@@ -27,6 +27,9 @@ ssmsh web-server-01
 # Run a command and exit (like ssh -c)
 ssmsh web-server-01 -c "uname -a"
 
+# Forward a local port to a remote port on the instance (like ssh -L)
+ssmsh web-server-01 -L 10080:80
+
 # Explicit profile/region
 ssmsh web-server-01 --profile myprofile --region ap-northeast-1
 ```

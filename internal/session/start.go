@@ -7,23 +7,29 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strconv"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
 )
 
-const nonInteractiveCommandDocument = "AWS-StartNonInteractiveCommand"
+const (
+	nonInteractiveCommandDocument = "AWS-StartNonInteractiveCommand"
+	portForwardingDocument        = "AWS-StartPortForwardingSession"
+)
 
 type StartOptions struct {
 	InstanceID string
 	Command    string
+	LocalPort  int
+	RemotePort int
 	Profile    string
 	Region     string
 	Endpoint   string
 }
 
 func Start(ctx context.Context, client SSMAPI, opts StartOptions) error {
-	input := buildStartSessionInput(opts.InstanceID, opts.Command)
+	input := buildStartSessionInput(opts.InstanceID, opts.Command, opts.LocalPort, opts.RemotePort)
 
 	output, err := client.StartSession(ctx, input)
 	if err != nil {
@@ -50,11 +56,18 @@ func Start(ctx context.Context, client SSMAPI, opts StartOptions) error {
 	return nil
 }
 
-func buildStartSessionInput(instanceID, command string) *ssm.StartSessionInput {
+func buildStartSessionInput(instanceID, command string, localPort, remotePort int) *ssm.StartSessionInput {
 	input := &ssm.StartSessionInput{Target: aws.String(instanceID)}
-	if command != "" {
+	switch {
+	case command != "":
 		input.DocumentName = aws.String(nonInteractiveCommandDocument)
 		input.Parameters = map[string][]string{"command": {command}}
+	case localPort != 0:
+		input.DocumentName = aws.String(portForwardingDocument)
+		input.Parameters = map[string][]string{
+			"portNumber":      {strconv.Itoa(remotePort)},
+			"localPortNumber": {strconv.Itoa(localPort)},
+		}
 	}
 	return input
 }

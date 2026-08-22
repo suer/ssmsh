@@ -32,6 +32,9 @@ ssmsh web-server-01 -L 10080:80
 
 # Explicit profile/region
 ssmsh web-server-01 --profile myprofile --region ap-northeast-1
+
+# Print version
+ssmsh -v
 ```
 
 If a Name tag matches multiple instances, you can interactively pick one from the candidates.

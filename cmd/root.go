@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"runtime/debug"
 	"strconv"
 	"strings"
 
@@ -28,6 +29,7 @@ func newRootCmd() *cobra.Command {
 		Args:         cobra.ExactArgs(1),
 		SilenceUsage: true,
 		RunE:         runLogin,
+		Version:      version(),
 	}
 	root.Flags().StringVar(&flagProfile, "profile", "", "AWS profile name")
 	root.Flags().StringVar(&flagRegion, "region", "", "AWS region")
@@ -38,6 +40,14 @@ func newRootCmd() *cobra.Command {
 
 func Execute() error {
 	return newRootCmd().Execute()
+}
+
+func version() string {
+	info, ok := debug.ReadBuildInfo()
+	if !ok || info.Main.Version == "" {
+		return "(devel)"
+	}
+	return info.Main.Version
 }
 
 func runLogin(cmd *cobra.Command, args []string) error {

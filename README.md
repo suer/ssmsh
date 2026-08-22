@@ -52,3 +52,9 @@ ssmsh -v
 ```
 
 If a Name tag matches multiple instances, you can interactively pick one from the candidates.
+
+## Test
+
+```sh
+mise run test
+```

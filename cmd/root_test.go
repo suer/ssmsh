@@ -1,6 +1,26 @@
 package cmd
 
-import "testing"
+import (
+	"bytes"
+	"strings"
+	"testing"
+)
+
+func TestVersionFlag(t *testing.T) {
+	for _, flag := range []string{"-v", "--version"} {
+		cmd := newRootCmd()
+		var out bytes.Buffer
+		cmd.SetOut(&out)
+		cmd.SetArgs([]string{flag})
+
+		if err := cmd.Execute(); err != nil {
+			t.Fatalf("%s: unexpected error: %v", flag, err)
+		}
+		if !strings.Contains(out.String(), version()) {
+			t.Fatalf("%s: got output %q, want it to contain %q", flag, out.String(), version())
+		}
+	}
+}
 
 func TestParseLocalForward(t *testing.T) {
 	local, remote, err := parseLocalForward("10080:80")

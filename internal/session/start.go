@@ -7,7 +7,9 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"os/signal"
 	"strconv"
+	"syscall"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
@@ -45,6 +47,9 @@ func Start(ctx context.Context, client SSMAPI, opts StartOptions) error {
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+
+	signal.Ignore(syscall.SIGINT)
+	defer signal.Reset(syscall.SIGINT)
 
 	if err := cmd.Run(); err != nil {
 		var exitErr *exec.ExitError

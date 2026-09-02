@@ -18,7 +18,7 @@ type Candidate struct {
 	State      string
 }
 
-type Selector func(candidates []Candidate) (string, error)
+type Selector func(name string, candidates []Candidate) (string, error)
 
 type NotFoundError struct {
 	Name string
@@ -44,7 +44,7 @@ func Resolve(ctx context.Context, client EC2API, name string, selector Selector)
 	case 1:
 		return candidates[0].InstanceID, nil
 	default:
-		return selector(candidates)
+		return selector(name, candidates)
 	}
 }
 

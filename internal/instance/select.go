@@ -28,9 +28,9 @@ var isInteractiveTerminal = func() bool {
 }
 
 func InteractiveSelector() Selector {
-	return func(candidates []Candidate) (string, error) {
+	return func(name string, candidates []Candidate) (string, error) {
 		if !isInteractiveTerminal() {
-			return "", &AmbiguousError{Candidates: candidates}
+			return "", &AmbiguousError{Name: name, Candidates: candidates}
 		}
 
 		searcher := func(input string, index int) bool {
@@ -40,7 +40,7 @@ func InteractiveSelector() Selector {
 		}
 
 		prompt := promptui.Select{
-			Label: fmt.Sprintf("Multiple instances matched (%d)", len(candidates)),
+			Label: fmt.Sprintf("Multiple instances matched %q (%d)", name, len(candidates)),
 			Items: candidates,
 			Templates: &promptui.SelectTemplates{
 				Label:    "{{ . }}",

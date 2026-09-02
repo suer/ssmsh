@@ -20,7 +20,7 @@ func (f *fakeEC2) DescribeInstances(ctx context.Context, params *ec2.DescribeIns
 }
 
 func failSelector(t *testing.T) Selector {
-	return func(candidates []Candidate) (string, error) {
+	return func(name string, candidates []Candidate) (string, error) {
 		t.Fatal("selector should not be called")
 		return "", nil
 	}
@@ -75,8 +75,11 @@ func TestResolve_MultipleMatches_UsesSelector(t *testing.T) {
 		},
 	}}
 	selectorCalled := false
-	selector := func(candidates []Candidate) (string, error) {
+	selector := func(name string, candidates []Candidate) (string, error) {
 		selectorCalled = true
+		if name != "dup" {
+			t.Fatalf("got name %q, want %q", name, "dup")
+		}
 		if len(candidates) != 2 {
 			t.Fatalf("got %d candidates, want 2", len(candidates))
 		}

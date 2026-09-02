@@ -15,11 +15,14 @@ func TestInteractiveSelector_NonTTY_ReturnsAmbiguousError(t *testing.T) {
 		{InstanceID: "i-bbb", Name: "dup"},
 	}
 
-	_, err := InteractiveSelector()(candidates)
+	_, err := InteractiveSelector()("dup", candidates)
 
 	var ambiguous *AmbiguousError
 	if !errors.As(err, &ambiguous) {
 		t.Fatalf("got %v, want AmbiguousError", err)
+	}
+	if ambiguous.Name != "dup" {
+		t.Fatalf("got Name %q, want %q", ambiguous.Name, "dup")
 	}
 	if len(ambiguous.Candidates) != 2 {
 		t.Fatalf("got %d candidates, want 2", len(ambiguous.Candidates))

@@ -47,7 +47,7 @@ func newRootCmd() *cobra.Command {
 	}
 	root.Flags().StringVar(&flagProfile, "profile", "", "AWS `profile` name")
 	root.Flags().StringVar(&flagRegion, "region", "", "AWS `region`")
-	root.Flags().StringVarP(&flagCommand, "command", "c", "", "`Command` to run instead of an interactive shell")
+	root.Flags().StringVarP(&flagCommand, "command", "c", "", "Run `command` instead of an interactive shell")
 	root.Flags().StringVarP(&flagLocalForward, "local-forward", "L", "", "Forward a local port to a remote port on the instance (`local:remote`)")
 	return root
 }

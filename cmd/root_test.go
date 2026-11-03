@@ -40,3 +40,28 @@ func TestParseLocalForward_Invalid(t *testing.T) {
 		}
 	}
 }
+
+func TestUsageShownOnInvalidInput(t *testing.T) {
+	cases := map[string][]string{
+		"no args":        {},
+		"unknown flag":   {"--unknown", "web"},
+		"conflict flags": {"web", "-c", "ls", "-L", "1:2"},
+		"bad forward":    {"web", "-L", "abc"},
+	}
+	for name, args := range cases {
+		t.Run(name, func(t *testing.T) {
+			cmd := newRootCmd()
+			var out bytes.Buffer
+			cmd.SetOut(&out)
+			cmd.SetErr(&out)
+			cmd.SetArgs(args)
+
+			if err := cmd.Execute(); err == nil {
+				t.Fatal("expected error, got nil")
+			}
+			if !strings.Contains(out.String(), "Usage:") {
+				t.Fatalf("expected usage in output, got %q", out.String())
+			}
+		})
+	}
+}

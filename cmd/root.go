@@ -40,10 +40,11 @@ func newRootCmd() *cobra.Command {
 
   # Specify profile and region
   ssmsh web-server-01 --profile myprofile --region ap-northeast-1`,
-		Args:         cobra.ExactArgs(1),
-		SilenceUsage: true,
-		RunE:         runLogin,
-		Version:      version(),
+		Args:          cobra.ExactArgs(1),
+		SilenceUsage:  true,
+		SilenceErrors: true,
+		RunE:          runLogin,
+		Version:       version(),
 	}
 	root.Flags().StringVar(&flagProfile, "profile", "", "AWS `profile` name")
 	root.Flags().StringVar(&flagRegion, "region", "", "AWS `region`")

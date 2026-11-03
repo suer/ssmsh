@@ -41,7 +41,6 @@ func newRootCmd() *cobra.Command {
   # Specify profile and region
   ssmsh web-server-01 --profile myprofile --region ap-northeast-1`,
 		Args:          cobra.ExactArgs(1),
-		SilenceUsage:  true,
 		SilenceErrors: true,
 		RunE:          runLogin,
 		Version:       version(),
@@ -81,6 +80,9 @@ func runLogin(cmd *cobra.Command, args []string) error {
 			return err
 		}
 	}
+
+	// Input is valid from here on; runtime errors should not dump the usage.
+	cmd.SilenceUsage = true
 
 	if err := session.CheckPluginInstalled(); err != nil {
 		return err

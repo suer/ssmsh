@@ -24,17 +24,31 @@ var (
 
 func newRootCmd() *cobra.Command {
 	root := &cobra.Command{
-		Use:          "ssmsh <name-or-instance-id>",
-		Short:        "Log in to an EC2 instance via AWS SSM Session Manager",
+		Use:   "ssmsh <name-or-instance-id>",
+		Short: "Log in to an EC2 instance via AWS SSM Session Manager",
+		Example: `  # Log in by instance ID
+  ssmsh i-0123456789abcdef0
+
+  # Log in by Name tag
+  ssmsh web-server-01
+
+  # Run a command and exit
+  ssmsh web-server-01 -c "uname -a"
+
+  # Forward local port 10080 to port 80 on the instance
+  ssmsh web-server-01 -L 10080:80
+
+  # Specify profile and region
+  ssmsh web-server-01 --profile myprofile --region ap-northeast-1`,
 		Args:         cobra.ExactArgs(1),
 		SilenceUsage: true,
 		RunE:         runLogin,
 		Version:      version(),
 	}
-	root.Flags().StringVar(&flagProfile, "profile", "", "AWS profile name")
-	root.Flags().StringVar(&flagRegion, "region", "", "AWS region")
-	root.Flags().StringVarP(&flagCommand, "command", "c", "", "Command to run instead of an interactive shell")
-	root.Flags().StringVarP(&flagLocalForward, "local-forward", "L", "", "Forward a local port to a remote port on the instance (local:remote)")
+	root.Flags().StringVar(&flagProfile, "profile", "", "AWS `profile` name")
+	root.Flags().StringVar(&flagRegion, "region", "", "AWS `region`")
+	root.Flags().StringVarP(&flagCommand, "command", "c", "", "`Command` to run instead of an interactive shell")
+	root.Flags().StringVarP(&flagLocalForward, "local-forward", "L", "", "Forward a local port to a remote port on the instance (`local:remote`)")
 	return root
 }
 

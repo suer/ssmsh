@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
@@ -16,6 +17,16 @@ type Candidate struct {
 	InstanceID string
 	Name       string
 	State      string
+	LaunchTime time.Time
+}
+
+const launchTimeLayout = "2006-01-02 15:04"
+
+func (c Candidate) LaunchedAt() string {
+	if c.LaunchTime.IsZero() {
+		return "-"
+	}
+	return c.LaunchTime.Local().Format(launchTimeLayout)
 }
 
 type Selector func(name string, candidates []Candidate) (string, error)
@@ -76,6 +87,9 @@ func toCandidate(inst types.Instance) Candidate {
 	c := Candidate{InstanceID: aws.ToString(inst.InstanceId)}
 	if inst.State != nil {
 		c.State = string(inst.State.Name)
+	}
+	if inst.LaunchTime != nil {
+		c.LaunchTime = *inst.LaunchTime
 	}
 	for _, tag := range inst.Tags {
 		if aws.ToString(tag.Key) == "Name" {

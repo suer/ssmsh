@@ -18,7 +18,7 @@ func (e *AmbiguousError) Error() string {
 	var b strings.Builder
 	fmt.Fprintf(&b, "multiple instances matched %q:\n", e.Name)
 	for _, c := range e.Candidates {
-		fmt.Fprintf(&b, "  %s (%s)\n", c.InstanceID, c.Name)
+		fmt.Fprintf(&b, "  %s (%s, launched %s)\n", c.InstanceID, c.Name, c.LaunchedAt())
 	}
 	return b.String()
 }
@@ -44,9 +44,9 @@ func InteractiveSelector() Selector {
 			Items: candidates,
 			Templates: &promptui.SelectTemplates{
 				Label:    "{{ . }}",
-				Active:   "\U0001F449 {{ .Name | cyan }} ({{ .InstanceID }})",
-				Inactive: "  {{ .Name }} ({{ .InstanceID }})",
-				Selected: "Selected: {{ .Name }} ({{ .InstanceID }})",
+				Active:   "\U0001F449 {{ .Name | cyan }} ({{ .InstanceID }}, launched {{ .LaunchedAt }})",
+				Inactive: "  {{ .Name }} ({{ .InstanceID }}, launched {{ .LaunchedAt }})",
+				Selected: "Selected: {{ .Name }} ({{ .InstanceID }}, launched {{ .LaunchedAt }})",
 			},
 			Searcher: searcher,
 			Size:     10,

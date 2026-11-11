@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"testing"
+	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
@@ -102,5 +103,22 @@ func TestResolve_DescribeInstancesError(t *testing.T) {
 	_, err := Resolve(context.Background(), client, "test-ec2-terraform-minimum", failSelector(t))
 	if err == nil {
 		t.Fatal("expected error")
+	}
+}
+
+func TestToCandidate_LaunchTime(t *testing.T) {
+	launched := time.Date(2026, 11, 1, 9, 30, 0, 0, time.UTC)
+	c := toCandidate(types.Instance{InstanceId: aws.String("i-aaa"), LaunchTime: &launched})
+	if !c.LaunchTime.Equal(launched) {
+		t.Fatalf("got %v, want %v", c.LaunchTime, launched)
+	}
+	if want := launched.Local().Format(launchTimeLayout); c.LaunchedAt() != want {
+		t.Fatalf("got %q, want %q", c.LaunchedAt(), want)
+	}
+}
+
+func TestCandidate_LaunchedAt_Zero(t *testing.T) {
+	if got := (Candidate{}).LaunchedAt(); got != "-" {
+		t.Fatalf("got %q, want %q", got, "-")
 	}
 }

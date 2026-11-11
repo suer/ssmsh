@@ -3,6 +3,7 @@ package instance
 import (
 	"context"
 	"fmt"
+	"slices"
 	"strings"
 	"time"
 
@@ -55,6 +56,9 @@ func Resolve(ctx context.Context, client EC2API, name string, selector Selector)
 	case 1:
 		return candidates[0].InstanceID, nil
 	default:
+		slices.SortStableFunc(candidates, func(a, b Candidate) int {
+			return b.LaunchTime.Compare(a.LaunchTime)
+		})
 		return selector(name, candidates)
 	}
 }
